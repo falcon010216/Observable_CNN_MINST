@@ -55,9 +55,12 @@ void CNN::_forward(volume& image)
 
 	for(int i=0; i<_tot_layers; i++){
 		
-		if(_layers[i]=='C'){
-			_convs[_conv_index].fwd(image,img_out, _convlist);
-
+		if(_layers[i]=='C')
+		{
+			double totalsum = _convs[_conv_index].fwd(image,img_out);
+			if(totalsum < 1.5)
+				_convlist.push_back(totalsum);
+			
 			_conv_index++;
 			image=img_out;			
 		}
@@ -194,7 +197,7 @@ void CNN::_iterate(volume& dataset, vector<int>& labels, vector<double>& loss_li
 				time(&elapsed);
 				total=(double) (elapsed-t_start)/sample*DS_len;
 				left=total - (double) (elapsed - t_start);
-				printf("\t  Accuracy: %02.2f - Loss: %02.2f - Sample %04d  ||  Lable: %d - Prediction: %d  ||  Elapsed time: %02.2f - Left time: %02.2f - Total time: %02.2f \r", accuracy, loss, sample, label, (int)tmp, (double) elapsed-t_start,left, total   );
+				printf("\t  Accuracy: %02.2f - Loss: %02.2f - Sample %04d  ||  Label: %d - Prediction: %d  ||  Elapsed time: %02.2f - Left time: %02.2f - Total time: %02.2f \r", accuracy, loss, sample, label, (int)tmp, (double) elapsed-t_start,left, total   );
 				
 				
 			}

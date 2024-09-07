@@ -94,7 +94,7 @@ void Convolutional::_out_dimension(){
 
 
 
-void Convolutional::fwd(volume image, volume& out, vector<double>& _convlist)
+double Convolutional::fwd(volume image, volume& out)
 {
 
     /*Produces a volume of size D2xH2xW2 where:
@@ -102,7 +102,7 @@ void Convolutional::fwd(volume image, volume& out, vector<double>& _convlist)
 			#H2=(H1−F+2P)/S+1
 			#D2= kernels number
     */
-
+    double sum = 0;
     int f_y= _specs[1], f_x= _specs[2], f_d= _specs[3];
     int n_kernel = _specs[0];
      
@@ -137,7 +137,7 @@ void Convolutional::fwd(volume image, volume& out, vector<double>& _convlist)
                             // in cache and in filt multiplication
                             double val = 0;
                             val = (in_filt[0] * in_cache[0]) + (in_filt[1] * in_cache[1]) + (in_filt[2] * in_cache[2]) + (in_filt[3] * 1);
-                            _convlist.push_back(val);
+                            sum = sum + val;
                             out.sum(val, arr_out, 3);
 
                         }
@@ -152,6 +152,7 @@ void Convolutional::fwd(volume image, volume& out, vector<double>& _convlist)
     }
 
     ReLu(out);	
+    return sum;
 }
 
 
