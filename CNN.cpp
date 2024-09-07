@@ -48,14 +48,15 @@ void CNN::load_dataset(string data_name ){
 
 
 
-void CNN::_forward(volume& image){
+void CNN::_forward(volume& image)
+{
 
 	volume img_out;
 
 	for(int i=0; i<_tot_layers; i++){
 		
 		if(_layers[i]=='C'){
-			_convs[_conv_index].fwd(image,img_out);
+			_convs[_conv_index].fwd(image,img_out, _convlist);
 
 			_conv_index++;
 			image=img_out;			
@@ -79,20 +80,25 @@ void CNN::_forward(volume& image){
 
 
 
-void CNN::_backward(vector<double>& gradient){
+void CNN::_backward(vector<double>& gradient)
+{
 	
 	volume img_out, img_in;  
 
-	for(int i=_tot_layers-1; i>=0; i--){
+	for(int i=_tot_layers-1; i>=0; i--)
+	{
 		
 		
-		if(_layers[i]=='C'){
+		if(_layers[i]=='C')
+		{
 			_conv_index--;
 			_convs[_conv_index].bp(img_in, img_out);	
+			_convlist.push_back(_convs[_conv_index]._eta);
 			img_in=img_out;	
 		}
 		else if(_layers[i]=='P'){}
-		else if(_layers[i]=='D'){	
+		else if(_layers[i]=='D')
+		{	
 			gradient=_dense[0].bp(gradient);	
 			
 			img_in.init(_dense_input_shape,3);
@@ -137,7 +143,8 @@ void CNN::_iterate(volume& dataset, vector<int>& labels, vector<double>& loss_li
 		
 		int DS_len = dataset.get_shape(0);
 
-		for(int sample=0; sample<DS_len; sample++ ){
+		for(int sample=0; sample<DS_len; sample++ )
+		{
 			
 			_get_image(image, dataset, sample);	
 			label = labels[sample];
@@ -163,10 +170,11 @@ void CNN::_iterate(volume& dataset, vector<int>& labels, vector<double>& loss_li
 			
 			//reset tmp to recycle it
 			tmp=0;
-			for(int i=0; i<_num_classes; i++){
+			for(int i=0; i<_num_classes; i++)
+			{
 				if(_result[i]>_result[tmp]) tmp=i;
 			}
-			
+			 
 			if ( (int) tmp == label) correctAnswer++;
 
 			// update accuracy
@@ -175,9 +183,11 @@ void CNN::_iterate(volume& dataset, vector<int>& labels, vector<double>& loss_li
 
 			//adjust the weight
 
-			if (b_training) _backward(error);
+			if (b_training) 
+				_backward(error);
 				
-			if(sample%preview_period==0 && sample!=0) {
+			if(sample%preview_period==0 && sample!=0) 
+			{
 
 				double left, total;
 				time_t elapsed;

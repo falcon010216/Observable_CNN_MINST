@@ -21,6 +21,7 @@ class CNN{
         vector<Pooling> _pools;
         vector<MultiLayerPerceptron> _dense;
 
+         
         int _conv_index=0, _pool_index=0, _tot_layers=0, _num_classes=0;
         int _dense_input_shape[3]={0,0,0};
         int _image_shape[3]={0,0,0};
@@ -41,13 +42,14 @@ class CNN{
         
         CNN() = default; //Not auto-generated if other constructors are present
         void add_conv(vector<int>& image_dim, vector<int>& kernels, int padding=1, int stride=1, double bias=0.1, double eta=0.01);
-        void add_pooling(int image_dim[3], char mode='a', int size=2, int stride=2, int padding=0);
+        
         void add_dense(int input, vector<int>& hidden, int num_classes=10, double bias=1.0, bool adam=true, double eta = 0.01);
         void load_dataset(string data_name );  
         void training( int epochs = 1, int preview_period = 1);
         void testing( int preview_period = 1);
         void sanity_check(int set_size=50 ,int epochs=200);
-        void plot_results();
+     
+        vector<double> _convlist;
         ~CNN();
 
 };

@@ -94,7 +94,8 @@ void Convolutional::_out_dimension(){
 
 
 
-void Convolutional::fwd(volume image, volume& out){
+void Convolutional::fwd(volume image, volume& out, vector<double>& _convlist)
+{
 
     /*Produces a volume of size D2xH2xW2 where:
 			#W2=(W1−F+2P)/S+1
@@ -128,12 +129,15 @@ void Convolutional::fwd(volume image, volume& out){
                 for (int x=0; x<_image_dim[2] - f_x; x+=_stride ){
 
                     for (int f_y_it=0; f_y_it<f_y; f_y_it++){
-                        for(int f_x_it=0; f_x_it<f_x; f_x_it++){
+                        for (int f_x_it = 0; f_x_it < f_x; f_x_it++) {
 
-                            int arr_out[3] = {kernel,y_out,x_out};
-                            int in_cache[3] = {layer, y + f_y_it, x + f_x_it};
-                            int in_filt[4] = {kernel, f_y_it, f_x_it, layer};
-                            double val = _cache.get_value(in_cache,3)*_filter.get_value(in_filt,4);
+                            int arr_out[3] = { kernel,y_out,x_out };
+                            int in_cache[3] = { layer, y + f_y_it, x + f_x_it };
+                            int in_filt[4] = { kernel, f_y_it, f_x_it, layer };
+                            // in cache and in filt multiplication
+                            double val = 0;
+                            val = (in_filt[0] * in_cache[0]) + (in_filt[1] * in_cache[1]) + (in_filt[2] * in_cache[2]) + (in_filt[3] * 1);
+                            _convlist.push_back(val);
                             out.sum(val, arr_out, 3);
 
                         }

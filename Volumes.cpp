@@ -122,7 +122,7 @@ double volume::get_value(int* index, int dimensions){
                     offset *= _shape[sh];
                 }
             }
-            if (index.size() < i)
+            if (i < 4)
             {
                 element += index[i] * offset;
             }

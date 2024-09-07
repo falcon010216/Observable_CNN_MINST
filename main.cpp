@@ -17,7 +17,9 @@ int         input_layer, num_classes, epochs, padding, stride;
 int main(int argc, char ** argv){
 
     //network istantiation
-
+    ofstream file1;
+    string data = "cnndata.txt";
+    file1.open(data);
     CNN network;
 
     //build the network 
@@ -36,11 +38,21 @@ int main(int argc, char ** argv){
 
     //train the network (Batch Size = 1)
 
-    network.training(epochs=1, 10);
+    network.training(epochs=1, 1);
 
     //evaluate new samples 
 
-    network.testing(10);
+    network.testing(1);
+    
+    for (int j = 0; j < network._convlist.size(); j++)
+    {
+        if(j<5000)
+            file1 << network._convlist[j] << '\n';
+
+    }
+
+    file1.close();
+
 
 
     return 0;

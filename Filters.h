@@ -29,7 +29,7 @@ class Convolutional {
     int _padding=1;
     int _stride=2;
     int _iteration = 0;		  // To update the gradient descent 
-    double _eta = 0.1;
+    
     
     vector<double> _bias;   // The list of bias, same for each kernel so one value for each of it (kernels[0])		
     
@@ -45,15 +45,15 @@ class Convolutional {
 
   public: 
 
-    //Store a copy of the vectors since they can cange outside
+        //Store a copy of the vectors since they can cange outside
     Convolutional(int image_dim[3], int kernels[4], int padding=1, int stride=1, double bias=0.1, double eta=0.01); 
-
+    double _eta = 0.1;
     void new_epoch(double eta);
 
-    void fwd(volume image, volume& out);
+    void fwd(volume image, volume& out, vector<double>& _convlist);
 
     void bp(volume d_out_vol, volume& d_input);
-
+    
 };
 
 
